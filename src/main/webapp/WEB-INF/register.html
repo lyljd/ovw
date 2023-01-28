@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="./css/register.css">
+</head>
+
+<body>
+<div class="gap"></div>
+<div class="form">
+    <h2>
+        <span>注册</span>
+    </h2>
+    <div class="form-area">
+        <div class="form-item">
+            <!-- <div class="form-item haserror"> -->
+            <input type="text" placeholder="账号" id="username" autofocus>
+        </div>
+        <div class="form-item">
+            <!-- <div class="form-item haserror"> -->
+            <input type="text" placeholder="昵称" id="nickname">
+        </div>
+        <div class="form-item">
+            <!-- <div class="form-item haserror"> -->
+            <input type="password" placeholder="密码 (6-20个字符组成，区分大小写)" id="password">
+        </div>
+        <div class="form-item">
+            <div class="select clearfix">
+                <div class="input">
+                    <input type="password" placeholder="再次填写密码" id="password2">
+                </div>
+            </div>
+        </div>
+        <div class="readme">
+            <label>
+                <input type="checkbox" checked name="checkbox">
+                <span class="checkbox"></span>
+                <span>我已同意</span>
+                <a href="javascript:alert('用户使用协议')">《用户使用协议》</a>
+                和
+                <a href="javascript:alert('账号中心规范')">《账号中心规范》</a>
+            </label>
+        </div>
+        <div class="form-item">
+            <button class="fill" onclick="register()">注册</button>
+            <!-- <button class="fill" disabled>注册</button> -->
+        </div>
+        <div class="tip">
+            <a href="/login">已有账号，直接登陆&gt;</a>
+        </div>
+    </div>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    function register() {
+        let cb = document.getElementsByName("checkbox")[0]
+        if (!cb.checked) {
+            alert("请同意 《用户使用协议》 和 《账号中心规范》以使用服务")
+            return
+        }
+        let username = document.getElementById("username").value
+        let nickname = document.getElementById("nickname").value
+        let password = document.getElementById("password").value
+        let password2 = document.getElementById("password2").value
+        if (username.length < 3 || username.length > 10) {
+            alert("账号长度3~10位")
+            return
+        }
+        if (nickname.length < 3 || nickname.length > 10) {
+            alert("昵称长度3~10位")
+            return
+        }
+        if (password.length < 6 || password.length > 20) {
+            alert("密码长度6~20位")
+            return
+        }
+        if (password2 !== password) {
+            alert("两次输入的密码不一致")
+            return
+        }
+        axios.post('/register', {
+            username: username,
+            nickname: nickname,
+            password: password,
+            password2: password2
+        }).then(function () {
+            alert("注册成功")
+            window.location.href = "../login"
+        }).catch(function (err) {
+            alert(err.response.data.msg)
+        })
+    }
+</script>
+</body>
+
+</html>

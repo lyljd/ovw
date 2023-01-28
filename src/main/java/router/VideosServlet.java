@@ -1,0 +1,35 @@
+package router;
+
+import dao.UserDao;
+import dao.VideoDao;
+import model.Video;
+import model.VideoView;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Objects;
+
+@WebServlet("/videos")
+public class VideosServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        resp.setContentType("text/plain; charset=utf-8");
+
+        try {
+            ArrayList<Video> videos = VideoDao.getVideos();
+            ArrayList<VideoView> vvs = new ArrayList<>();
+            for (Video v : videos) {
+                vvs.add(new VideoView(v, Objects.requireNonNull(UserDao.getUserById(v.uid))));
+            }
+            //SuccResp.ret(resp, vvs);
+            req.setAttribute("videos", vvs);
+            req.setAttribute("page", "首页");
+            req.getRequestDispatcher("/WEB-INF/index.jsp").forward(req, resp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
